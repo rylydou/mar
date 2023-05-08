@@ -7,34 +7,6 @@ func _enter_tree() -> void:
 	multiplayer.peer_connected.connect(add_player)
 	multiplayer.peer_disconnected.connect(del_player)
 
-func host_server(port: int) -> void:
-	prints("SERVER: Hosting server on port %s" % [port])
-	
-	var peer = ENetMultiplayerPeer.new()
-	var error := peer.create_server(port)
-	if error != OK:
-		OS.alert(error_string(error), "Failed to start server.")
-		return
-	multiplayer.multiplayer_peer = peer
-	$UI/Lobby.hide()
-	
-	add_player(1)
-	
-	get_tree().paused = false
-
-func connect_client(address: String, port: int) -> void:
-	prints("CLIENT: Connecting client to '%s' on port %s " % [address, port])
-	
-	var peer = ENetMultiplayerPeer.new()
-	var error := peer.create_client(address, port)
-	if error != OK:
-		OS.alert(error_string(error), "Failed to connect to server.")
-		return
-	multiplayer.multiplayer_peer = peer
-	$UI/Lobby.hide()
-	
-	get_tree().paused = false
-
 var players: Array[int] = []
 
 func add_player(id: int):
@@ -56,6 +28,7 @@ func del_player(id: int):
 	if id == 1:
 		print('CLIENT: Host left, restarting game.')
 		players.clear()
+		multiplayer.multiplayer_peer.close()
 		get_tree().reload_current_scene.call_deferred()
 		return
 	

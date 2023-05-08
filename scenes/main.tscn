@@ -77,6 +77,7 @@ _spawnable_scenes = PackedStringArray("res://scenes/player.tscn")
 spawn_path = NodePath("../Objects")
 
 [node name="Camera" type="Camera2D" parent="."]
+zoom = Vector2(2, 2)
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -93,31 +94,79 @@ script = ExtResource("4_yvhqy")
 main = NodePath("../..")
 server_listener = NodePath("ServerListener")
 server_advertiser = NodePath("ServerAdvertiser")
-connect_address = NodePath("TabContainer/Connect/VBox/HBoxContainer/ConnectAddress")
-connect_port = NodePath("TabContainer/Connect/VBox/HBoxContainer/ConnectPort")
-connect_list = NodePath("TabContainer/Connect/VBox/ConnectList")
-host_address = NodePath("TabContainer/Host/VBox/HBoxContainer3/HostAddress")
-host_port = NodePath("TabContainer/Host/VBox/HBoxContainer/HostPort")
-host_name = NodePath("TabContainer/Host/VBox/HBoxContainer2/HostName")
-host_broadcast = NodePath("TabContainer/Host/VBox/HostBroadcast")
+connect_address = NodePath("VBoxContainer/TabContainer/Connect/VBox/HBoxContainer/ConnectAddress")
+connect_port = NodePath("VBoxContainer/TabContainer/Connect/VBox/HBoxContainer/ConnectPort")
+connect_list = NodePath("VBoxContainer/TabContainer/Connect/VBox/ConnectList")
+host_address = NodePath("VBoxContainer/TabContainer/Host/VBox/IpInfo/HostAddress")
+host_port = NodePath("VBoxContainer/TabContainer/Host/VBox/Host/HostPort")
+host_name = NodePath("VBoxContainer/TabContainer/Host/VBox/Broadcast/HostName")
+host_broadcast = NodePath("VBoxContainer/TabContainer/Host/VBox/Broadcast/HostBroadcast")
 
-[node name="TabContainer" type="TabContainer" parent="UI/Lobby"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Lobby"]
 layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/Lobby/VBoxContainer"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 6
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Lobby/VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Label" type="Label" parent="UI/Lobby/VBoxContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "Username:"
+vertical_alignment = 1
+
+[node name="UsernameEdit" type="LineEdit" parent="UI/Lobby/VBoxContainer/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Anonymous"
+
+[node name="TabContainer" type="TabContainer" parent="UI/Lobby/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
 tab_alignment = 1
 
-[node name="Connect" type="MarginContainer" parent="UI/Lobby/TabContainer"]
+[node name="Connect" type="MarginContainer" parent="UI/Lobby/VBoxContainer/TabContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="VBox" type="VBoxContainer" parent="UI/Lobby/TabContainer/Connect"]
+[node name="VBox" type="VBoxContainer" parent="UI/Lobby/VBoxContainer/TabContainer/Connect"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="ConnectList" type="ItemList" parent="UI/Lobby/TabContainer/Connect/VBox"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="UI/Lobby/VBoxContainer/TabContainer/Connect/VBox"]
+layout_mode = 2
+
+[node name="ShowPasswordButton" type="CheckButton" parent="UI/Lobby/VBoxContainer/TabContainer/Connect/VBox/HBoxContainer2"]
+layout_mode = 2
+button_pressed = true
+text = "Show password protected"
+
+[node name="ShowFullButton" type="CheckButton" parent="UI/Lobby/VBoxContainer/TabContainer/Connect/VBox/HBoxContainer2"]
+layout_mode = 2
+button_pressed = true
+text = "Show full"
+
+[node name="Fill" type="Control" parent="UI/Lobby/VBoxContainer/TabContainer/Connect/VBox/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RefreshButton" type="Button" parent="UI/Lobby/VBoxContainer/TabContainer/Connect/VBox/HBoxContainer2"]
+layout_mode = 2
+text = "Refresh"
+
+[node name="ConnectList" type="ItemList" parent="UI/Lobby/VBoxContainer/TabContainer/Connect/VBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
@@ -127,35 +176,35 @@ item_0/text = "Looking for games on your local network..."
 item_0/selectable = false
 item_0/disabled = true
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/Lobby/TabContainer/Connect/VBox"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Lobby/VBoxContainer/TabContainer/Connect/VBox"]
 layout_mode = 2
 
-[node name="ConnectAddress" type="LineEdit" parent="UI/Lobby/TabContainer/Connect/VBox/HBoxContainer"]
+[node name="ConnectAddress" type="LineEdit" parent="UI/Lobby/VBoxContainer/TabContainer/Connect/VBox/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "address"
+placeholder_text = "Server address..."
 caret_blink = true
 caret_blink_interval = 0.5
 
-[node name="Label" type="Label" parent="UI/Lobby/TabContainer/Connect/VBox/HBoxContainer"]
+[node name="Label" type="Label" parent="UI/Lobby/VBoxContainer/TabContainer/Connect/VBox/HBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 1
 text = ":"
 vertical_alignment = 1
 
-[node name="ConnectPort" type="LineEdit" parent="UI/Lobby/TabContainer/Connect/VBox/HBoxContainer"]
+[node name="ConnectPort" type="LineEdit" parent="UI/Lobby/VBoxContainer/TabContainer/Connect/VBox/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "1234"
-placeholder_text = "port"
+placeholder_text = "1234"
 caret_blink = true
 caret_blink_interval = 0.5
 
-[node name="ConnectButton" type="Button" parent="UI/Lobby/TabContainer/Connect/VBox/HBoxContainer"]
+[node name="ConnectButton" type="Button" parent="UI/Lobby/VBoxContainer/TabContainer/Connect/VBox/HBoxContainer"]
 layout_mode = 2
 text = "Connect"
 
-[node name="Host" type="MarginContainer" parent="UI/Lobby/TabContainer"]
+[node name="Host" type="MarginContainer" parent="UI/Lobby/VBoxContainer/TabContainer"]
 visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 4
@@ -163,67 +212,125 @@ theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="VBox" type="VBoxContainer" parent="UI/Lobby/TabContainer/Host"]
+[node name="VBox" type="VBoxContainer" parent="UI/Lobby/VBoxContainer/TabContainer/Host"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="UI/Lobby/TabContainer/Host/VBox"]
+[node name="IpInfo" type="HBoxContainer" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox"]
+custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
+theme_override_constants/separation = 6
 
-[node name="Label" type="Label" parent="UI/Lobby/TabContainer/Host/VBox/HBoxContainer3"]
+[node name="Label" type="Label" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/IpInfo"]
 layout_mode = 2
-text = "Your ip address:"
+size_flags_vertical = 1
+text = "Your IP address:"
 vertical_alignment = 1
 
-[node name="HostAddress" type="LineEdit" parent="UI/Lobby/TabContainer/Host/VBox/HBoxContainer3"]
+[node name="HostAddress" type="LineEdit" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/IpInfo"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+placeholder_text = "Getting your IP address..."
 editable = false
 caret_blink = true
 caret_blink_interval = 0.5
 
-[node name="HostBroadcast" type="CheckButton" parent="UI/Lobby/TabContainer/Host/VBox"]
+[node name="HSeparator" type="HSeparator" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox"]
+layout_mode = 2
+
+[node name="Broadcast" type="HBoxContainer" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="HostBroadcast" type="CheckButton" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/Broadcast"]
 unique_name_in_owner = true
 layout_mode = 2
 button_pressed = true
 text = "Broadcast on network"
 
-[node name="TextEdit" type="TextEdit" parent="UI/Lobby/TabContainer/Host/VBox"]
-visible = false
+[node name="Label" type="Label" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/Broadcast"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "Server name:"
+vertical_alignment = 1
+
+[node name="HostName" type="LineEdit" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/Broadcast"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Unnamed server..."
+
+[node name="PlayPassword" type="HBoxContainer" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox"]
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Label" type="Label" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/PlayPassword"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "Play password:"
+vertical_alignment = 1
+
+[node name="LineEdit" type="LineEdit" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/PlayPassword"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "No password for playing..."
+secret = true
+
+[node name="SpectatePassword" type="HBoxContainer" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="CheckButton" type="CheckButton" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/SpectatePassword"]
+layout_mode = 2
+text = "Allow spectating"
+
+[node name="Label" type="Label" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/SpectatePassword"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "Spectate password:"
+vertical_alignment = 1
+
+[node name="LineEdit" type="LineEdit" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/SpectatePassword"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "No password for spectating..."
+secret = true
+
+[node name="Control" type="Control" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox"]
+layout_mode = 2
 size_flags_vertical = 3
-placeholder_text = "Server description... (optional)"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/Lobby/TabContainer/Host/VBox"]
+[node name="Host" type="HBoxContainer" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox"]
+custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
+theme_override_constants/separation = 6
 
-[node name="PortLabel" type="Label" parent="UI/Lobby/TabContainer/Host/VBox/HBoxContainer"]
+[node name="PortLabel" type="Label" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/Host"]
 layout_mode = 2
+size_flags_vertical = 1
 text = "Port #:"
 vertical_alignment = 1
 
-[node name="HostPort" type="LineEdit" parent="UI/Lobby/TabContainer/Host/VBox/HBoxContainer"]
+[node name="HostPort" type="LineEdit" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/Host"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "1234"
-placeholder_text = "port"
+placeholder_text = "1234"
+max_length = 5
 caret_blink = true
 caret_blink_interval = 0.5
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="UI/Lobby/TabContainer/Host/VBox"]
-layout_mode = 2
-size_flags_vertical = 8
-
-[node name="HostName" type="LineEdit" parent="UI/Lobby/TabContainer/Host/VBox/HBoxContainer2"]
+[node name="HostButton" type="Button" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/Host"]
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "server name (optional)"
+text = "Host & Spectate"
 
-[node name="HostButton" type="Button" parent="UI/Lobby/TabContainer/Host/VBox/HBoxContainer2"]
+[node name="HostAndPlayButton" type="Button" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/Host"]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "Host & Play"
 
 [node name="ServerListener" type="Node" parent="UI/Lobby"]
@@ -232,7 +339,11 @@ script = ExtResource("5_db7qn")
 [node name="ServerAdvertiser" type="Node" parent="UI/Lobby"]
 script = ExtResource("6_8yafm")
 
-[connection signal="item_clicked" from="UI/Lobby/TabContainer/Connect/VBox/ConnectList" to="UI/Lobby" method="_on_connect_list_item_clicked"]
-[connection signal="pressed" from="UI/Lobby/TabContainer/Connect/VBox/HBoxContainer/ConnectButton" to="UI/Lobby" method="_btn_connect"]
-[connection signal="pressed" from="UI/Lobby/TabContainer/Host/VBox/HBoxContainer2/HostButton" to="UI/Lobby" method="_btn_host"]
+[connection signal="pressed" from="UI/Lobby/VBoxContainer/TabContainer/Connect/VBox/HBoxContainer2/RefreshButton" to="UI/Lobby" method="clear_connect_list"]
+[connection signal="item_activated" from="UI/Lobby/VBoxContainer/TabContainer/Connect/VBox/ConnectList" to="UI/Lobby" method="_on_connect_list_item_activated"]
+[connection signal="item_selected" from="UI/Lobby/VBoxContainer/TabContainer/Connect/VBox/ConnectList" to="UI/Lobby" method="_on_connect_list_item_selected"]
+[connection signal="pressed" from="UI/Lobby/VBoxContainer/TabContainer/Connect/VBox/HBoxContainer/ConnectButton" to="UI/Lobby" method="_btn_connect"]
+[connection signal="pressed" from="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/Host/HostButton" to="UI/Lobby" method="_btn_host" binds= [false]]
+[connection signal="pressed" from="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/Host/HostAndPlayButton" to="UI/Lobby" method="_btn_host" binds= [true]]
+[connection signal="error" from="UI/Lobby/ServerListener" to="UI/Lobby" method="_on_server_listener_error"]
 [connection signal="new_server" from="UI/Lobby/ServerListener" to="UI/Lobby" method="_on_server_listener_new_server"]
