@@ -1,0 +1,96 @@
+[gd_scene load_steps=8 format=3 uid="uid://drscd8bltk4wv"]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_r6rnh"]
+[ext_resource type="Texture2D" uid="uid://mapcp3iabgox" path="res://sprites/player.png" id="2_s43sy"]
+[ext_resource type="Script" path="res://scripts/player_input.gd" id="2_xgn00"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_3lgcg"]
+properties/0/path = NodePath(".:speed_move")
+properties/0/spawn = true
+properties/0/sync = true
+properties/1/path = NodePath(".:speed_extra")
+properties/1/spawn = true
+properties/1/sync = true
+properties/2/path = NodePath(".:speed_vertical")
+properties/2/spawn = true
+properties/2/sync = true
+properties/3/path = NodePath(".:position")
+properties/3/spawn = true
+properties/3/sync = true
+properties/4/path = NodePath(".:id")
+properties/4/spawn = true
+properties/4/sync = false
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_1372w"]
+properties/0/path = NodePath(".:jump_down")
+properties/0/spawn = false
+properties/0/sync = true
+properties/1/path = NodePath(".:move")
+properties/1/spawn = false
+properties/1/sync = true
+properties/2/path = NodePath(".:action_down")
+properties/2/spawn = false
+properties/2/sync = true
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6dird"]
+size = Vector2(6, 7)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rjxl7"]
+size = Vector2(6, 7)
+
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("input", "flip_node", "ladder_dectector_area")]
+collision_layer = 0
+floor_constant_speed = true
+floor_snap_length = 4.0
+script = ExtResource("1_r6rnh")
+input = NodePath("PlayerInput")
+flip_node = NodePath("Flip")
+ladder_dectector_area = NodePath("LadderDetector")
+BLOCK_SIZE = 8.0
+move_speed = 5.0
+move_crouch_speed = 3.0
+move_acc_ticks = 8.0
+move_dec_ticks = 8.0
+move_opp_ticks = 8.0
+move_acc_air_ticks = 16.0
+move_dec_air_ticks = 64.0
+move_opp_air_ticks = 32.0
+jump_height_min = 1.5
+jump_ticks = 35
+fall_ticks = 35
+max_fall_ratio = 1.0
+climb_speed_vertical = 5.0
+climb_speed_horizontal = 5.0
+extra_ground_dec = 16.0
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_3lgcg")
+
+[node name="PlayerInput" type="MultiplayerSynchronizer" parent="."]
+root_path = NodePath(".")
+replication_config = SubResource("SceneReplicationConfig_1372w")
+script = ExtResource("2_xgn00")
+
+[node name="Flip" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="Sprite" type="Sprite2D" parent="Flip"]
+position = Vector2(0, -4)
+texture = ExtResource("2_s43sy")
+hframes = 4
+vframes = 4
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+position = Vector2(0, -3.5)
+shape = SubResource("RectangleShape2D_6dird")
+debug_color = Color(1, 0, 0, 0.25098)
+
+[node name="LadderDetector" type="Area2D" parent="."]
+unique_name_in_owner = true
+collision_layer = 0
+collision_mask = 65536
+
+[node name="Collision" type="CollisionShape2D" parent="LadderDetector"]
+position = Vector2(0, -3.5)
+shape = SubResource("RectangleShape2D_rjxl7")
+debug_color = Color(1, 1, 1, 0)
