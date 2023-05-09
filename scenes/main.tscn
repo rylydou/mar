@@ -114,7 +114,7 @@ spawn_path = NodePath("../Objects")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
-[node name="Lobby" type="PanelContainer" parent="UI" node_paths=PackedStringArray("main", "server_listener", "server_advertiser", "connect_address", "connect_port", "connect_list", "host_address", "host_port", "host_name", "host_broadcast")]
+[node name="Lobby" type="PanelContainer" parent="UI" node_paths=PackedStringArray("main", "server_listener", "server_advertiser", "connect_address", "connect_port", "connect_list", "host_address", "host_port", "host_name", "host_tps", "host_broadcast")]
 process_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -131,9 +131,10 @@ server_advertiser = NodePath("ServerAdvertiser")
 connect_address = NodePath("VBoxContainer/TabContainer/Connect/VBox/HBoxContainer/ConnectAddress")
 connect_port = NodePath("VBoxContainer/TabContainer/Connect/VBox/HBoxContainer/ConnectPort")
 connect_list = NodePath("VBoxContainer/TabContainer/Connect/VBox/ConnectList")
-host_address = NodePath("VBoxContainer/TabContainer/Host/VBox/IpInfo/HostAddress")
+host_address = NodePath("VBoxContainer/TabContainer/Host/VBox/Info/HostAddress")
 host_port = NodePath("VBoxContainer/TabContainer/Host/VBox/Host/HostPort")
 host_name = NodePath("VBoxContainer/TabContainer/Host/VBox/Broadcast/HostName")
+host_tps = NodePath("VBoxContainer/TabContainer/Host/VBox/Config/TPSEdit")
 host_broadcast = NodePath("VBoxContainer/TabContainer/Host/VBox/Broadcast/HostBroadcast")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/Lobby"]
@@ -253,18 +254,18 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="IpInfo" type="HBoxContainer" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox"]
+[node name="Info" type="HBoxContainer" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox"]
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="Label" type="Label" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/IpInfo"]
+[node name="Label" type="Label" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/Info"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "Your IP address:"
 vertical_alignment = 1
 
-[node name="HostAddress" type="LineEdit" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/IpInfo"]
+[node name="HostAddress" type="LineEdit" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/Info"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -297,48 +298,75 @@ vertical_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Unnamed server..."
+clear_button_enabled = true
 caret_blink = true
 caret_blink_interval = 0.5
 
-[node name="PlayPassword" type="HBoxContainer" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox"]
+[node name="HSeparator2" type="HSeparator" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox"]
+layout_mode = 2
+
+[node name="Player" type="HBoxContainer" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox"]
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="Label" type="Label" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/PlayPassword"]
+[node name="Label" type="Label" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/Player"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "Player password:"
 vertical_alignment = 1
 
-[node name="LineEdit" type="LineEdit" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/PlayPassword"]
+[node name="PlayPwdEdit" type="LineEdit" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/Player"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "No password for players..."
 secret = true
+clear_button_enabled = true
 caret_blink = true
 caret_blink_interval = 0.5
 
-[node name="SpectatePassword" type="HBoxContainer" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox"]
+[node name="Spectator" type="HBoxContainer" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox"]
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="CheckButton" type="CheckButton" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/SpectatePassword"]
+[node name="CheckButton" type="CheckButton" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/Spectator"]
 layout_mode = 2
 text = "Allow spectating"
 
-[node name="Label" type="Label" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/SpectatePassword"]
+[node name="Label" type="Label" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/Spectator"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "Spectator password:"
 vertical_alignment = 1
 
-[node name="LineEdit" type="LineEdit" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/SpectatePassword"]
+[node name="SpecPwdEdit" type="LineEdit" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/Spectator"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "No password for spectators..."
 secret = true
+clear_button_enabled = true
+caret_blink = true
+caret_blink_interval = 0.5
+
+[node name="HSeparator3" type="HSeparator" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox"]
+layout_mode = 2
+
+[node name="Config" type="HBoxContainer" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="TPSLabel" type="Label" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/Config"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "Server TPS:"
+vertical_alignment = 1
+
+[node name="TPSEdit" type="LineEdit" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/Config"]
+layout_mode = 2
+size_flags_horizontal = 0
+placeholder_text = "20"
 caret_blink = true
 caret_blink_interval = 0.5
 

@@ -11,6 +11,7 @@ extends Control
 @export var host_address: LineEdit
 @export var host_port: LineEdit
 @export var host_name: LineEdit
+@export var host_tps: LineEdit
 @export var host_broadcast: BaseButton
 
 var is_broadcasting = false
@@ -32,7 +33,7 @@ func _btn_connect() -> void:
 		address = connect_address.text
 	
 	var port = 1234
-	if not connect_port.text.is_empty():
+	if connect_port.text.is_valid_int():
 		port = int(connect_port.text)
 	
 	if not connect_client(address, port): return
@@ -41,8 +42,13 @@ func _btn_connect() -> void:
 
 func _btn_host(and_player: bool) -> void:
 	var port = 1234
-	if not host_port.text.is_empty():
+	if host_port.text.is_valid_int():
 		port = int(host_port.text)
+	
+	var tps = 20
+	if host_tps.text.is_valid_int():
+		tps = int(host_tps.text)
+	Engine.physics_ticks_per_second = tps
 	
 	if not host_server(port): return
 	
