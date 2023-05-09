@@ -127,8 +127,9 @@ func _on_server_listener_new_server(info: Dictionary) -> void:
 
 func _on_server_listener_error(err: int) -> void:
 	connect_list.clear()
-	connect_list.add_item('Cannot find games on your local network :( - ' + error_string(err), null, false)
-	#connect_list.set_item_disabled(0, true)
+	connect_list.add_item('Cannot find games on your local network: ' + error_string(err), null, false)
+	connect_list.set_item_disabled(0, true)
+	connect_list.set_item_custom_fg_color(0, Color.RED)
 
 func clear_connect_list() -> void:
 	connect_list.clear()
