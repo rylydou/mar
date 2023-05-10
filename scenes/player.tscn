@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://drscd8bltk4wv"]
+[gd_scene load_steps=9 format=3 uid="uid://drscd8bltk4wv"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_r6rnh"]
+[ext_resource type="PackedScene" uid="uid://b6o3qrtq75ff7" path="res://scenes/basic_proj.tscn" id="2_61c33"]
 [ext_resource type="Texture2D" uid="uid://mapcp3iabgox" path="res://sprites/player.png" id="2_s43sy"]
 [ext_resource type="Script" path="res://scripts/player_input.gd" id="2_xgn00"]
 
@@ -38,7 +39,7 @@ size = Vector2(6, 7)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rjxl7"]
 size = Vector2(6, 7)
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("input", "flip_node", "ladder_dectector_area")]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("input", "flip_node", "ladder_dectector_area", "shoot_marker")]
 collision_layer = 0
 floor_constant_speed = true
 floor_snap_length = 4.0
@@ -46,6 +47,7 @@ script = ExtResource("1_r6rnh")
 input = NodePath("PlayerInput")
 flip_node = NodePath("Flip")
 ladder_dectector_area = NodePath("LadderDetector")
+shoot_marker = NodePath("Flip/ShootMarker")
 BLOCK_SIZE = 8.0
 move_speed = 5.0
 move_crouch_speed = 3.0
@@ -62,6 +64,7 @@ max_fall_ratio = 1.0
 climb_speed_vertical = 5.0
 climb_speed_horizontal = 5.0
 extra_ground_dec = 16.0
+proj_scene = ExtResource("2_61c33")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_3lgcg")
@@ -79,6 +82,10 @@ position = Vector2(0, -4)
 texture = ExtResource("2_s43sy")
 hframes = 4
 vframes = 4
+
+[node name="ShootMarker" type="Marker2D" parent="Flip"]
+position = Vector2(6, -4)
+gizmo_extents = 2.0
 
 [node name="Collision" type="CollisionShape2D" parent="."]
 position = Vector2(0, -3.5)

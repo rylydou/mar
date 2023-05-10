@@ -1,12 +1,12 @@
 class_name PlayerInput extends MultiplayerSynchronizer
 
-@export var move := Vector2.ZERO
+var move := Vector2.ZERO
 
-@export var jump_pressed := false
-@export var jump_down := false
+var jump_pressed := false
+var jump_down := false
 
-@export var action_pressed := false
-@export var action_down := false
+var action_pressed := false
+var action_down := false
 
 func _ready() -> void:
 	set_process(get_multiplayer_authority() == multiplayer.get_unique_id())

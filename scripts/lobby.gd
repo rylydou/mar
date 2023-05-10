@@ -1,6 +1,7 @@
 extends Control
 
 @export var main: Main
+@export var game: GameManager
 @export var server_listener: ServerListener
 @export var server_advertiser: ServerAdvertiser
 
@@ -39,13 +40,16 @@ func _btn_connect() -> void:
 	if not connect_client(address, port): return
 	
 	close()
+	
+	if OS.is_debug_build():
+		get_window().position.x = DisplayServer.screen_get_usable_rect().size.x/2
 
 func _btn_host(and_player: bool) -> void:
 	var port = 1234
 	if host_port.text.is_valid_int():
 		port = int(host_port.text)
 	
-	var tps = 20
+	var tps = 60
 	if host_tps.text.is_valid_int():
 		tps = int(host_tps.text)
 	Engine.physics_ticks_per_second = tps
@@ -54,8 +58,12 @@ func _btn_host(and_player: bool) -> void:
 	
 	close()
 	
+	if OS.is_debug_build():
+		get_window().position.x = 0
+	
 	if and_player:
 		main.add_player(1)
+	#game.reset()
 	
 	server_listener.socket_udp.close()
 	

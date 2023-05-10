@@ -1,17 +1,11 @@
 class_name Player extends CharacterBody2D
 
-@export var input: PlayerInput
-
-@export var flip_node: Node2D
-@export var ladder_dectector_area: Area2D
-
 signal death()
 
-@export var id := 1 :
-	set(new_id):
-		id = new_id
-		# Give authority over the player input to the appropriate peer.
-		input.set_multiplayer_authority(new_id)
+@export var input: PlayerInput
+@export var flip_node: Node2D
+@export var ladder_dectector_area: Area2D
+@export var shoot_marker: Marker2D
 
 @export var TPS = 60.
 @export var BLOCK_SIZE = 16.
@@ -65,6 +59,16 @@ var is_clibing := false
 @export var extra_ground_dec := 8.
 @export var extra_air_dec := 0.
 
+@export_group('Shooting')
+@export var shoot_ticks := 15
+var shoot_timer := 0.
+@export var proj_scene: PackedScene
+
+var id := 1 :
+	set(new_id):
+		id = new_id
+		input.set_multiplayer_authority(new_id)
+
 func _ready() -> void:
 	calculate()
 
@@ -75,14 +79,17 @@ func calculate() -> void:
 	jump_velocity_max = Calc.jump_velocity(jump_height_max*BLOCK_SIZE, jump_gravity)
 	max_fall_speed = jump_velocity_max*max_fall_ratio
 
-@export var speed_move := 0.
-@export var speed_extra := 0.
-@export var speed_vertical := 0.
-@export var direction := 1.
+var speed_move := 0.
+var speed_extra := 0.
+var speed_vertical := 0.
+var direction := 1.
 func _physics_process(delta: float) -> void:
+	jump_buffer_timer -= delta
 	if input.jump_pressed:
 		input.jump_pressed = false
 		jump_buffer_timer = jump_buffer_ticks/TPS
+	
+	action_buffer_timer -= delta
 	if input.action_pressed:
 		input.action_pressed = false
 		action_buffer_timer = action_buffer_ticks/TPS
@@ -95,6 +102,19 @@ func _physics_process(delta: float) -> void:
 		process_state_climb(delta)
 	else:
 		process_state_platformer(delta)
+	
+	shoot_timer -= delta
+	if action_buffer_timer > 0:
+		if shoot_timer <= 0:
+			action_buffer_timer = 0
+			shoot_timer = shoot_ticks/TPS
+			if multiplayer.is_server():
+				var proj = proj_scene.instantiate() as Projectile
+				proj.transform = shoot_marker.global_transform
+				proj.name = str(id) + '_' + str(counter)
+				counter += 1
+				get_parent().add_child(proj, true)
+var counter := 0
 
 func process_state_platformer(delta: float) -> void:
 	if is_on_floor():
@@ -233,4 +253,3 @@ func process_jump(delta: float) -> void:
 #			else:
 #				speed_vertical = -jump_velocity_max
 #				speed_extra = min(speed_extra, 4)
-	jump_buffer_timer -= delta
