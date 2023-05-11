@@ -64,10 +64,20 @@ var is_clibing := false
 var shoot_timer := 0.
 @export var proj_scene: PackedScene
 
+var colors = [
+	Color.RED,
+	Color.YELLOW,
+	Color.LIME,
+	Color.CYAN,
+	Color.BLUE,
+	Color.MAGENTA,
+]
+
 var id := 1 :
 	set(new_id):
 		id = new_id
 		input.set_multiplayer_authority(new_id)
+		modulate = colors[id%colors.size()]
 
 func _ready() -> void:
 	calculate()
@@ -112,6 +122,7 @@ func _physics_process(delta: float) -> void:
 				var proj = proj_scene.instantiate() as Projectile
 				proj.transform = shoot_marker.global_transform
 				proj.name = str(id) + '_' + str(counter)
+				proj.modulate = modulate
 				counter += 1
 				get_parent().add_child(proj, true)
 var counter := 0

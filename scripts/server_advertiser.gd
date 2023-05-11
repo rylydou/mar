@@ -4,7 +4,7 @@ signal error(err: int)
 
 # How often to broadcast out to the network that this host is active
 @export var broadcast_interval: float = 1.
-var server_info := {'name': 'LAN Game'}
+var server_info := {}
 
 var socket_udp: PacketPeerUDP
 var broadcast_timer := Timer.new()
@@ -16,22 +16,23 @@ func _enter_tree() -> void:
 	broadcast_timer.autostart = true
 
 func activate() -> void:
-	if multiplayer.is_server():
-		add_child(broadcast_timer)
-		broadcast_timer.timeout.connect(broadcast) 
-		
-		socket_udp = PacketPeerUDP.new()
-		socket_udp.set_broadcast_enabled(true)
-		var err := socket_udp.set_dest_address('255.255.255.255', broadcast_port)
-		if err != OK:
-			printerr('Error starting broadcast ', error_string(err))
-			error.emit(err)
-			return
-		
-		print('Broadcast started successfully.')
-	else:
-		printerr('Broadcast error: Current network peer is not in server mode.')
+	if not multiplayer.is_server():
+		printerr('LAN: Cannot start broadcast. Current network peer is not in server mode.')
 		error.emit(ERR_UNAVAILABLE)
+		return
+	
+	add_child(broadcast_timer)
+	broadcast_timer.timeout.connect(broadcast) 
+	
+	socket_udp = PacketPeerUDP.new()
+	socket_udp.set_broadcast_enabled(true)
+	var err := socket_udp.set_dest_address('255.255.255.255', broadcast_port)
+	if err != OK:
+		printerr('LAN: Error starting broadcast on port %s: %s.' % [broadcast_port, error_string(err)])
+		error.emit(err)
+		return
+	
+	print('LAN: Broadcast started successfully.')
 
 func broadcast() -> void:
 	#print('Broadcasting game...')

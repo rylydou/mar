@@ -25,13 +25,6 @@ func add_player(id: int):
 	players_node.add_child(player)
 
 func del_player(id: int):
-	if id == 1:
-		print('CLIENT: Host left, restarting game.')
-		players.clear()
-		multiplayer.multiplayer_peer.close()
-		get_tree().reload_current_scene.call_deferred()
-		return
-	
 	if not is_multiplayer_authority():
 		return
 	

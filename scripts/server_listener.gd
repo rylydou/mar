@@ -25,11 +25,11 @@ func _ready():
 	
 	var err = socket_udp.bind(listen_port)
 	if err != OK:
-		printerr('GameServer LAN service: Error listening on port: ' + str(listen_port) + '. ' + error_string(err))
+		printerr('LAN: Error starting broadcast on port %s: %s.' % [listen_port, error_string(err)])
 		error.emit(err)
 		return
 	
-	print('GameServer LAN service: Listening on port: ' + str(listen_port))
+	print('LAN: Listening on port: ' + str(listen_port))
 
 func _process(delta):
 	if socket_udp.get_available_packet_count() > 0:
@@ -39,18 +39,17 @@ func _process(delta):
 		var server_address := server_ip
 		
 		if server_ip != '' and server_port > 0:
-			# We've discovered a new server! Add it to the list and let people know
 			if not known_servers.has(server_address):
+				# We've discovered a new server! Add it to the list and let people know
 				var server_message := array_bytes.get_string_from_ascii()
 				var game_info := JSON.parse_string(server_message) as Dictionary
 				game_info.ip = server_ip
 				game_info.address = server_address
 				game_info.last_seen = Time.get_unix_time_from_system()
 				known_servers[server_address] = game_info
-				print('New server found: %s - %s:%s' % [game_info.name, game_info.ip, game_info.port])
 				new_server.emit(game_info)
-			# Update the last seen time
 			else:
+				# Update the last seen time
 				var game_info := known_servers[server_address] as Dictionary
 				game_info.last_seen = Time.get_unix_time_from_system()
 
@@ -60,7 +59,6 @@ func clean_up():
 		var server_info := known_servers[server_address] as Dictionary
 		if (now - server_info.last_seen) > server_cleanup_threshold:
 			known_servers.erase(server_address)
-			print('Remove old server: %s' % server_address)
 			remove_server.emit(server_address)
 
 func _exit_tree():

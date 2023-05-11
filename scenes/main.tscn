@@ -1,53 +1,17 @@
-[gd_scene load_steps=16 format=3 uid="uid://c3y7c3j4xw4ha"]
+[gd_scene load_steps=13 format=3 uid="uid://c3y7c3j4xw4ha"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_ahwhj"]
 [ext_resource type="PackedScene" uid="uid://drscd8bltk4wv" path="res://scenes/player.tscn" id="2_5efia"]
 [ext_resource type="Script" path="res://scripts/viewport_scaler.gd" id="3_6mt8x"]
-[ext_resource type="Texture2D" uid="uid://y2bslhpmw2v1" path="res://sprites/tileset.png" id="3_dryvr"]
 [ext_resource type="Script" path="res://scripts/game_manager.gd" id="3_pr0gb"]
-[ext_resource type="Theme" uid="uid://efyo68apnjop" path="res://resources/theme.tres" id="4_167ax"]
 [ext_resource type="Script" path="res://scripts/lobby.gd" id="4_yvhqy"]
 [ext_resource type="Script" path="res://scripts/server_listener.gd" id="5_db7qn"]
+[ext_resource type="PackedScene" uid="uid://dbbor176bs2cu" path="res://scenes/world.tscn" id="5_ib6y1"]
 [ext_resource type="Script" path="res://scripts/server_advertiser.gd" id="6_8yafm"]
 [ext_resource type="Script" path="res://scripts/ping_label.gd" id="10_k26ov"]
 [ext_resource type="Script" path="res://scripts/ping.gd" id="11_si2sl"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_be8h2"]
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wx0xj"]
-texture = ExtResource("3_dryvr")
-texture_region_size = Vector2i(8, 8)
-0:0/0 = 0
-0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
-0:0/0/physics_layer_0/angular_velocity = 0.0
-0:0/0/physics_layer_1/linear_velocity = Vector2(0, 0)
-0:0/0/physics_layer_1/angular_velocity = 0.0
-1:0/0 = 0
-1:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
-1:0/0/physics_layer_0/angular_velocity = 0.0
-1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-4, -4, 4, -4, 4, 4, -4, 4)
-1:0/0/physics_layer_1/linear_velocity = Vector2(0, 0)
-1:0/0/physics_layer_1/angular_velocity = 0.0
-2:0/0 = 0
-2:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
-2:0/0/physics_layer_0/angular_velocity = 0.0
-2:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-4, -4, 4, -4, 4, 4, -4, 4)
-2:0/0/physics_layer_1/linear_velocity = Vector2(0, 0)
-2:0/0/physics_layer_1/angular_velocity = 0.0
-3:0/0 = 0
-3:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
-3:0/0/physics_layer_0/angular_velocity = 0.0
-3:0/0/physics_layer_1/linear_velocity = Vector2(0, 0)
-3:0/0/physics_layer_1/angular_velocity = 0.0
-3:0/0/physics_layer_1/polygon_0/points = PackedVector2Array(-4, -4, 4, -4, 4, 4, -4, 4)
-
-[sub_resource type="TileSet" id="TileSet_umrki"]
-tile_size = Vector2i(8, 8)
-physics_layer_0/collision_layer = 1
-physics_layer_0/collision_mask = 0
-physics_layer_1/collision_layer = 65536
-physics_layer_1/collision_mask = 0
-sources/1 = SubResource("TileSetAtlasSource_wx0xj")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pd2oc"]
 content_margin_left = 6.0
@@ -59,9 +23,9 @@ bg_color = Color(0, 0, 0, 1)
 [node name="Main" type="Node" node_paths=PackedStringArray("players_node")]
 script = ExtResource("1_ahwhj")
 player_scene = ExtResource("2_5efia")
-players_node = NodePath("Scaler/SubViewportContainer/SubViewport/Objects")
+players_node = NodePath("Scaler/SubViewportContainer/SubViewport/World/Objects")
 
-[node name="Game" type="MultiplayerSynchronizer" parent="."]
+[node name="GameManager" type="MultiplayerSynchronizer" parent="."]
 root_path = NodePath(".")
 replication_config = SubResource("SceneReplicationConfig_be8h2")
 script = ExtResource("3_pr0gb")
@@ -97,34 +61,11 @@ positional_shadow_atlas_quad_3 = 0
 size = Vector2i(480, 270)
 render_target_update_mode = 4
 
-[node name="Background" type="CanvasLayer" parent="Scaler/SubViewportContainer/SubViewport"]
-layer = -1
-
-[node name="ColorRect" type="ColorRect" parent="Scaler/SubViewportContainer/SubViewport/Background"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)
-
-[node name="TileMap" type="TileMap" parent="Scaler/SubViewportContainer/SubViewport"]
-tile_set = SubResource("TileSet_umrki")
-collision_visibility_mode = 2
-format = 2
-layer_0/tile_data = PackedInt32Array(589808, 65537, 0, 589809, 65537, 0, 589810, 65537, 0, 589811, 65537, 0, 589812, 65537, 0, 589813, 65537, 0, 589814, 65537, 0, 589815, 65537, 0, 589816, 65537, 0, 589817, 65537, 0, 589818, 65537, 0, 589819, 65537, 0, 589820, 65537, 0, 589821, 65537, 0, 589822, 65537, 0, 589823, 65537, 0, 524288, 65537, 0, 524289, 65537, 0, 524290, 65537, 0, 524291, 65537, 0, 524292, 65537, 0, 524293, 65537, 0, 524294, 65537, 0, 524295, 65537, 0, 524296, 65537, 0, 524297, 65537, 0, 524298, 65537, 0, 524299, 65537, 0, 524300, 65537, 0, 524301, 65537, 0, 524302, 65537, 0, 524303, 65537, 0, 458767, 65537, 0, 393231, 65537, 0, 327695, 65537, 0, 262159, 65537, 0, 196623, 65537, 0, 131087, 65537, 0, 65551, 65537, 0, 15, 65537, 0, -65521, 65537, 0, -131057, 65537, 0, -196593, 65537, 0, -262129, 65537, 0, -327665, 65537, 0, -393201, 65537, 0, -458737, 65537, 0, -524273, 65537, 0, -589809, 65537, 0, -589810, 65537, 0, -589811, 65537, 0, -589812, 65537, 0, -589813, 65537, 0, -589814, 65537, 0, -589815, 65537, 0, -589816, 65537, 0, -589817, 65537, 0, -589818, 65537, 0, -589819, 65537, 0, -589820, 65537, 0, -589821, 65537, 0, -589822, 65537, 0, -589823, 65537, 0, -589824, 65537, 0, -524289, 65537, 0, -524290, 65537, 0, -524291, 65537, 0, -524292, 65537, 0, -524293, 65537, 0, -524294, 65537, 0, -524295, 65537, 0, -524296, 65537, 0, -524297, 65537, 0, -524298, 65537, 0, -524299, 65537, 0, -524300, 65537, 0, -524301, 65537, 0, -524302, 65537, 0, -524303, 65537, 0, -524304, 65537, 0, -458768, 65537, 0, -393232, 65537, 0, -327696, 65537, 0, -262160, 65537, 0, -196624, 65537, 0, -131088, 65537, 0, -65552, 65537, 0, -16, 65537, 0, 65520, 65537, 0, 131056, 65537, 0, 196592, 65537, 0, 262128, 65537, 0, 327664, 65537, 0, 393200, 65537, 0, 458736, 65537, 0, 524272, 65537, 0, 524273, 65537, 0, 524274, 65537, 0, 524275, 65537, 0, 524276, 65537, 0, 524277, 65537, 0, 524278, 65537, 0, 524279, 65537, 0, 458756, 65537, 0, 458757, 65537, 0, 458758, 65537, 0, 458759, 65537, 0, 458760, 65537, 0, 458761, 65537, 0, 458762, 65537, 0, 458763, 65537, 0, 458764, 65537, 0, 458765, 65537, 0, 458766, 65537, 0, 458755, 65537, 0, 458754, 65537, 0, 458753, 65537, 0, 458752, 65537, 0, 524287, 65537, 0, 524286, 65537, 0, 524285, 65537, 0, 524284, 65537, 0, 524283, 65537, 0, 524282, 65537, 0, 524281, 65537, 0, 524280, 65537, 0, -393231, 65537, 0, -327695, 65537, 0, -262159, 65537, 0, -196623, 65537, 0, -131087, 65537, 0, -65551, 65537, 0, -15, 65537, 0, 65521, 65537, 0, 131057, 65537, 0, 196593, 65537, 0, 262129, 65537, 0, 327665, 65537, 0, 393201, 65537, 0, 458737, 65537, 0, -458767, 65537, 0, -524274, 65537, 0, -458738, 65537, 0, -393202, 65537, 0, -327666, 65537, 0, -262130, 65537, 0, -196594, 65537, 0, -131058, 65537, 0, -65522, 65537, 0, 14, 65537, 0, 65550, 65537, 0, 131086, 65537, 0, 196622, 65537, 0, 262158, 65537, 0, 327694, 65537, 0, 393230, 65537, 0, -524275, 65537, 0, -524276, 65537, 0, -524277, 65537, 0, -524278, 65537, 0, -524279, 65537, 0, -524280, 65537, 0, -524281, 65537, 0, -524282, 65537, 0, -524283, 65537, 0, -524284, 65537, 0, -524285, 65537, 0, -524286, 65537, 0, -524287, 65537, 0, -524288, 65537, 0, -458753, 65537, 0, -458754, 65537, 0, -458755, 65537, 0, -458756, 65537, 0, -458757, 65537, 0, -458758, 65537, 0, -458759, 65537, 0, -458760, 65537, 0, -458761, 65537, 0, -458762, 65537, 0, -458763, 65537, 0, -458764, 65537, 0, -458765, 65537, 0, -458766, 65537, 0, 393204, 131073, 0, 458740, 131073, 0, 327667, 131073, 0, 327666, 131073, 0, 393203, 131073, 0, 393202, 131073, 0, 458739, 131073, 0, 458738, 131073, 0, 458741, 131073, 0, 393205, 131073, 0, 393206, 131073, 0, 327670, 131073, 0, 327669, 131073, 0, 327668, 131073, 0, 458742, 131073, 0, 327671, 131073, 0, 393207, 131073, 0, 458743, 131073, 0, 393208, 131073, 0, 393209, 131073, 0, 393210, 131073, 0, 327675, 131073, 0, 327676, 131073, 0, 327677, 131073, 0, 327678, 131073, 0, 327679, 131073, 0, 393214, 131073, 0, 393213, 131073, 0, 393212, 131073, 0, 393211, 131073, 0, 458744, 131073, 0, 458745, 131073, 0, 458746, 131073, 0, 458747, 131073, 0, 458748, 131073, 0, 458749, 131073, 0, 458750, 131073, 0, 458751, 131073, 0, 393216, 131073, 0, 393217, 131073, 0, 393218, 131073, 0, 393219, 131073, 0, 327683, 131073, 0, 327684, 131073, 0, 327682, 131073, 0, 327681, 131073, 0, 327680, 131073, 0, 393215, 131073, 0, 327672, 131073, 0, 327673, 131073, 0, 327674, 131073, 0, 262144, 131073, 0, 262145, 131073, 0, 262146, 131073, 0, 262147, 131073, 0, 262148, 131073, 0, 262149, 131073, 0, 327685, 131073, 0, 393220, 131073, 0, 393221, 131073, 0, 393222, 131073, 0, 393223, 131073, 0, 327686, 131073, 0, 327687, 131073, 0, 327688, 131073, 0, 327689, 131073, 0, 327690, 131073, 0, 262150, 131073, 0, 262151, 131073, 0, 262152, 131073, 0, 262153, 131073, 0, 393224, 131073, 0, 393225, 131073, 0, 393226, 131073, 0, 393227, 131073, 0, 327691, 131073, 0, 327692, 131073, 0, 262156, 131073, 0, 327693, 131073, 0, 393228, 131073, 0, 393229, 131073, 0, 262157, 131073, 0, 262155, 131073, 0, 262154, 131073, 0, 196597, 131073, 0, 262133, 131073, 0, 262134, 131073, 0, 196598, 131073, 0, 262132, 131073, 0, 196596, 131073, 0, 262131, 131073, 0, 196595, 131073, 0, 196594, 131073, 0, 262130, 131073, 0)
-
-[node name="Objects" type="Node2D" parent="Scaler/SubViewportContainer/SubViewport"]
-
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="Scaler/SubViewportContainer/SubViewport"]
-_spawnable_scenes = PackedStringArray("res://scenes/player.tscn", "res://scenes/basic_proj.tscn")
-spawn_path = NodePath("../Objects")
-
-[node name="Camera" type="Camera2D" parent="Scaler/SubViewportContainer/SubViewport"]
+[node name="World" parent="Scaler/SubViewportContainer/SubViewport" instance=ExtResource("5_ib6y1")]
 
 [node name="UI" type="CanvasLayer" parent="."]
 
-[node name="Lobby" type="PanelContainer" parent="UI" node_paths=PackedStringArray("main", "game", "server_listener", "server_advertiser", "connect_address", "connect_port", "connect_list", "host_address", "host_port", "host_name", "host_tps", "host_broadcast")]
+[node name="Lobby" type="PanelContainer" parent="UI" node_paths=PackedStringArray("main", "game", "server_listener", "server_advertiser", "connect_label", "connect_address", "connect_port", "connect_list", "host_address", "host_port", "host_name", "host_broadcast")]
 process_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -132,20 +73,19 @@ anchor_bottom = 1.0
 offset_right = 8.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("4_167ax")
 theme_override_styles/panel = SubResource("StyleBoxFlat_pd2oc")
 script = ExtResource("4_yvhqy")
 main = NodePath("../..")
-game = NodePath("../../Game")
+game = NodePath("../../GameManager")
 server_listener = NodePath("ServerListener")
 server_advertiser = NodePath("ServerAdvertiser")
+connect_label = NodePath("../ConnectLabel")
 connect_address = NodePath("VBoxContainer/TabContainer/Connect/VBox/HBoxContainer/ConnectAddress")
 connect_port = NodePath("VBoxContainer/TabContainer/Connect/VBox/HBoxContainer/ConnectPort")
 connect_list = NodePath("VBoxContainer/TabContainer/Connect/VBox/ConnectList")
 host_address = NodePath("VBoxContainer/TabContainer/Host/VBox/Info/HostAddress")
 host_port = NodePath("VBoxContainer/TabContainer/Host/VBox/Host/HostPort")
 host_name = NodePath("VBoxContainer/TabContainer/Host/VBox/Broadcast/HostName")
-host_tps = NodePath("VBoxContainer/TabContainer/Host/VBox/Config/TPSEdit")
 host_broadcast = NodePath("VBoxContainer/TabContainer/Host/VBox/Broadcast/HostBroadcast")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/Lobby"]
@@ -273,14 +213,14 @@ theme_override_constants/separation = 6
 [node name="Label" type="Label" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/Info"]
 layout_mode = 2
 size_flags_vertical = 1
-text = "Your IP address:"
+text = "Your local IP address:"
 vertical_alignment = 1
 
 [node name="HostAddress" type="LineEdit" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/Info"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "Getting your IP address..."
+placeholder_text = "Getting your local IP address..."
 editable = false
 caret_blink = true
 caret_blink_interval = 0.5
@@ -360,27 +300,6 @@ clear_button_enabled = true
 caret_blink = true
 caret_blink_interval = 0.5
 
-[node name="HSeparator3" type="HSeparator" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox"]
-layout_mode = 2
-
-[node name="Config" type="HBoxContainer" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox"]
-custom_minimum_size = Vector2(0, 24)
-layout_mode = 2
-theme_override_constants/separation = 6
-
-[node name="TPSLabel" type="Label" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/Config"]
-layout_mode = 2
-size_flags_vertical = 1
-text = "Server TPS:"
-vertical_alignment = 1
-
-[node name="TPSEdit" type="LineEdit" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox/Config"]
-layout_mode = 2
-size_flags_horizontal = 0
-placeholder_text = "60"
-caret_blink = true
-caret_blink_interval = 0.5
-
 [node name="Control" type="Control" parent="UI/Lobby/VBoxContainer/TabContainer/Host/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -426,8 +345,28 @@ offset_top = 6.0
 offset_right = 46.0
 offset_bottom = 29.0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
+theme_override_constants/outline_size = 4
 script = ExtResource("10_k26ov")
+
+[node name="ConnectLabel" type="Label" parent="UI"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.5
+offset_top = -13.0
+offset_right = 50.5
+offset_bottom = 13.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 32
+text = "Connecting..."
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Ping" type="Timer" parent="."]
 autostart = true
@@ -442,3 +381,5 @@ script = ExtResource("11_si2sl")
 [connection signal="error" from="UI/Lobby/ServerListener" to="UI/Lobby" method="_on_server_listener_error"]
 [connection signal="new_server" from="UI/Lobby/ServerListener" to="UI/Lobby" method="_on_server_listener_new_server"]
 [connection signal="timeout" from="Ping" to="Ping" method="_on_timeout"]
+
+[editable path="Scaler/SubViewportContainer/SubViewport/World"]

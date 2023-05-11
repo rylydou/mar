@@ -5,9 +5,9 @@ func _process(delta: float) -> void:
 		text = 'Host'
 		return
 	
-	if Performance.has_custom_monitor('network/ping'):
-		var ping = Performance.get_custom_monitor('network/ping')
-		text = '%sms ping' % round(ping*1000)
+	if Performance.has_custom_monitor('Network/Ping'):
+		var ping = Performance.get_custom_monitor('Network/Ping')
+		text = '%sms' % ping
 		return
 	
-	text = 'Unknown ping'
+	text = '???'

@@ -20,7 +20,7 @@ func update_viewport() -> void:
 	var inner_ratio := inner.x/inner.y
 	var outer_ratio := outer.x/outer.y
 	
-	var s := 1.0
+	var s := 1.
 	if inner_ratio >= outer_ratio:
 		s = outer.x/inner.x
 	else:
@@ -34,4 +34,3 @@ func update(scale_factor: float) -> void:
 	viewport.size.x = base_size.x/scale_factor
 	viewport.size.y = base_size.y/scale_factor
 	viewport_container.scale = Vector2(scale_factor, scale_factor)
-	

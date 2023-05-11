@@ -5,6 +5,8 @@ extends Control
 @export var server_listener: ServerListener
 @export var server_advertiser: ServerAdvertiser
 
+@export var connect_label: Label
+
 @export var connect_address: LineEdit
 @export var connect_port: LineEdit
 @export var connect_list: ItemList
@@ -12,7 +14,6 @@ extends Control
 @export var host_address: LineEdit
 @export var host_port: LineEdit
 @export var host_name: LineEdit
-@export var host_tps: LineEdit
 @export var host_broadcast: BaseButton
 
 var is_broadcasting = false
@@ -21,12 +22,31 @@ var server_port = 0
 
 func _enter_tree() -> void:
 	clear_connect_list()
+	multiplayer.connected_to_server.connect(_connected_to_server)
+	multiplayer.connection_failed.connect(_connection_failed)
+	multiplayer.server_disconnected.connect(_server_disconnected)
+
+func _connected_to_server() -> void:
+	connect_label.hide()
+
+func _connection_failed() -> void:
+	printerr('LOBBY: Failed to connect to server.')
+	OS.alert('Failed to connect to server.')
+	main.players.clear()
+	multiplayer.multiplayer_peer.close()
+	get_tree().reload_current_scene.call_deferred()
+
+func _server_disconnected() -> void:
+	print('LOBBY: The host has left.')
+	OS.alert('The host left.')
+	main.players.clear()
+	multiplayer.multiplayer_peer.close()
+	get_tree().reload_current_scene.call_deferred()
 
 func _ready() -> void:
 	get_tree().paused = true
 	
 	host_address.text = IP.get_local_addresses()[0]
-	prints('My local addresses:', IP.get_local_addresses())
 
 func _btn_connect() -> void:
 	var address = 'localhost'
@@ -49,11 +69,6 @@ func _btn_host(and_player: bool) -> void:
 	if host_port.text.is_valid_int():
 		port = int(host_port.text)
 	
-	var tps = 60
-	if host_tps.text.is_valid_int():
-		tps = int(host_tps.text)
-	Engine.physics_ticks_per_second = tps
-	
 	if not host_server(port): return
 	
 	close()
@@ -67,30 +82,39 @@ func _btn_host(and_player: bool) -> void:
 	
 	server_listener.socket_udp.close()
 	
-	server_advertiser.server_info['name'] = host_name.text
 	server_advertiser.server_info['port'] = port
+	if not host_name.text.is_empty():
+		server_advertiser.server_info['name'] = host_name.text
+	
+	if OS.has_environment("COMPUTERNAME"):
+		server_advertiser.server_info['device_name'] = OS.get_environment("COMPUTERNAME")
+		return
+	else:
+		server_advertiser.server_info['device_name'] = 'Some %s device' % OS.get_name()
 	
 	if host_broadcast.button_pressed:
 		server_advertiser.activate()
 
 func host_server(port: int) -> bool:
-	prints("SERVER: Hosting server on port %s" % [port])
+	prints("LOBBY: Hosting server on port %s" % [port])
 	
 	var peer = ENetMultiplayerPeer.new()
 	var error := peer.create_server(port)
 	if error != OK:
-		OS.alert(error_string(error), "Failed to start server.")
+		OS.alert("Failed to start server: " + error_string(error))
 		return false
 	multiplayer.multiplayer_peer = peer
 	return true
 
 func connect_client(address: String, port: int) -> bool:
-	prints("CLIENT: Connecting client to '%s' on port %s " % [address, port])
+	prints("LOBBY: Connecting client to '%s' on port %s " % [address, port])
+	
+	connect_label.show()
 	
 	var peer = ENetMultiplayerPeer.new()
 	var error := peer.create_client(address, port)
 	if error != OK:
-		OS.alert(error_string(error), "Failed to connect to server.")
+		OS.alert("Failed to connect to server: " + error_string(error), "Failed to connect to server.")
 		return false
 	multiplayer.multiplayer_peer = peer
 	return true
@@ -109,7 +133,7 @@ func _on_connect_list_item_selected(index: int) -> void:
 	
 	if not server_listener.known_servers.has(address):
 		connect_list.remove_item(index)
-		OS.alert('This server does not exist anymore.')
+		OS.alert('This server is no longer online.')
 		return
 	
 	var info = server_listener.known_servers[address]
@@ -117,13 +141,19 @@ func _on_connect_list_item_selected(index: int) -> void:
 	connect_port.text = str(info.port)
 
 func _on_connect_list_item_activated(index: int) -> void:
+	if connect_list.get_item_metadata(index) == null: return
 	_on_connect_list_item_selected(index)
-	#_btn_connect()
+	_btn_connect()
 
 func _on_server_listener_new_server(info: Dictionary) -> void:
 	var txt := PackedStringArray()
 	if info.has('name') and info.name != '':
 		txt.append(info.name)
+#		if info.has('device_name') and info.device_name != '':
+#			txt.append(' on ')
+#			txt.append(info.device_name)
+#	elif info.has('device_name') and info.device_name != '':
+#		txt.append(info.device_name)
 	else:
 		txt.append(info.address)
 	
@@ -138,6 +168,10 @@ func _on_server_listener_new_server(info: Dictionary) -> void:
 	connect_list.add_item(''.join(txt))
 	connect_list.set_item_tooltip(connect_list.item_count - 1, info.address)
 	connect_list.set_item_metadata(connect_list.item_count - 1, info.address)
+	
+	if OS.is_debug_build() and (not info.has('name') or info.name == ''):
+		_on_connect_list_item_selected(connect_list.item_count - 1)
+		_btn_connect()
 
 func _on_server_listener_error(err: int) -> void:
 	connect_list.clear()
